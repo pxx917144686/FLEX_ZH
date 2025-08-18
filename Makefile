@@ -1,7 +1,7 @@
 # 遇到问题联系中文翻译作者：pxx917144686
 
 # 支持更旧版本的iOS设备(从15.6降到9.0)
-TARGET = iphone:latest:9.0
+TARGET = iphone:15.6:9.0
 
 # 添加更多架构支持，包括32位设备（移除 arm64e）
 ARCHS = armv7 armv7s arm64
