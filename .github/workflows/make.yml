@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
         with:
-          submodules: recursive  # 递归拉取子模块
+          submodules: recursive  # 递归拉取子模块，确保 Orion 完整
 
       - name: Check cache for Theos and SDKs
         run: |
@@ -34,20 +34,20 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install make bzip2 ldid
+          brew install make xz ldid
           echo "$(brew --prefix)/opt/make/libexec/gnubin" >> $GITHUB_PATH
-          echo "$(brew --prefix)/opt/bzip2/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix)/opt/xz/bin" >> $GITHUB_PATH
 
-      - name: Setup iPhoneOS14.5 SDK
+      - name: Setup iPhoneOS15.6 SDK
         run: |
-          curl -LO https://github.com/theos/sdks/releases/download/2023-08-10/iPhoneOS14.5.sdk.tbz2
-          ls -lh iPhoneOS14.5.sdk.tbz2
-          if [ $(stat -f %z iPhoneOS14.5.sdk.tbz2) -lt 1000000 ]; then
+          curl -LO https://github.com/theos/sdks/releases/download/2023-08-10/iPhoneOS15.6.sdk.tar.xz
+          ls -lh iPhoneOS15.6.sdk.tar.xz
+          if [ $(stat -f %z iPhoneOS15.6.sdk.tar.xz) -lt 1000000 ]; then
             echo "Error: Downloaded file is too small!"
             exit 1
           fi
           mkdir -p $THEOS/sdks
-          tar -xjf iPhoneOS14.5.sdk.tbz2 -C $THEOS/sdks/
+          tar -xJf iPhoneOS15.6.sdk.tar.xz -C $THEOS/sdks/
 
       - name: Clean build directory
         run: |
