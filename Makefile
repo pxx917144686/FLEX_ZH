@@ -35,8 +35,8 @@ $(LIBRARY_NAME)_LDFLAGS += -Wl,-no_warn_inits
 # 兼容性标志
 $(LIBRARY_NAME)_CFLAGS += -miphoneos-version-min=9.0
 
-# 包含源文件，排除 theos/vendor 目录
-$(LIBRARY_NAME)_FILES = $(shell find . -path './theos/vendor' -prune -o -name '*.m' -o -name '*.mm') flex_fishhook.c
+# 包含源文件，使用 wildcard 只包含当前目录的文件
+$(LIBRARY_NAME)_FILES = $(wildcard *.m *.mm) flex_fishhook.c
 
 include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/library.mk
