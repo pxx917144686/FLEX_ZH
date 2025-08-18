@@ -1,4 +1,4 @@
-name: Build FLEX Deb
+name: Build FLEX_ZH Deb
 
 on:
   push:
@@ -14,11 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
         with:
-          submodules: recursive  # 确保递归拉取所有子模块，包括 Orion
+          submodules: recursive  # 递归拉取子模块
 
       - name: Check cache for Theos and SDKs
         run: |
-          echo upstream_heads=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
+          echo upstream_heads=`git ls-remote https://github.com/roothide/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
 
       - name: Use cache
         id: cache
@@ -40,14 +40,14 @@ jobs:
 
       - name: Setup iPhoneOS14.5 SDK
         run: |
-          curl -LO https://github.com/theos/sdks/releases/download/2023-08-10/iPhoneOS14.5.sdk.tar.bz2
-          ls -lh iPhoneOS14.5.sdk.tar.bz2
-          if [ $(stat -f %z iPhoneOS14.5.sdk.tar.bz2) -lt 1000000 ]; then
+          curl -LO https://github.com/theos/sdks/releases/download/2023-08-10/iPhoneOS14.5.sdk.tbz2
+          ls -lh iPhoneOS14.5.sdk.tbz2
+          if [ $(stat -f %z iPhoneOS14.5.sdk.tbz2) -lt 1000000 ]; then
             echo "Error: Downloaded file is too small!"
             exit 1
           fi
           mkdir -p $THEOS/sdks
-          tar -xjf iPhoneOS14.5.sdk.tar.bz2 -C $THEOS/sdks/
+          tar -xjf iPhoneOS14.5.sdk.tbz2 -C $THEOS/sdks/
 
       - name: Clean build directory
         run: |
@@ -69,5 +69,5 @@ jobs:
       - name: Upload Deb packages
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: FLEX
+          name: FLEX_ZH
           path: ${{ github.workspace }}/packages/*.deb
