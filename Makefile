@@ -1,10 +1,10 @@
 # 遇到问题联系中文翻译作者：pxx917144686
 
-# 支持更旧版本的iOS设备(从15.6降到9.0)
+# 使用 iPhoneOS15.6 SDK，支持 iOS 9.0 及以上
 TARGET = iphone:15.6:9.0
 
-# 添加更多架构支持，包括32位设备（移除 arm64e）
-ARCHS = armv7 armv7s arm64
+# 支持的架构
+ARCHS = armv7 arm64
 
 # 名称和类型
 LIBRARY_NAME = FLEX
@@ -17,10 +17,8 @@ THEOS_LIBRARY_PATH = /Users/pxx917144686/theos/lib/iphone/rootless
 
 # 添加必要的框架和库
 $(LIBRARY_NAME)_FRAMEWORKS = Foundation UIKit CoreGraphics CoreFoundation
-$(LIBRARY_NAME)_PRIVATE_FRAMEWORKS = 
-
-# 系统库
-$(LIBRARY_NAME)_LIBRARIES = system
+$(LIBRARY_NAME)_PRIVATE_FRAMEWORKS =
+$(LIBRARY_NAME)_LIBRARIES = objc c++ system
 
 # 编译设置
 $(LIBRARY_NAME)_CFLAGS = -fobjc-arc -include flex_fishhook.h \
@@ -34,12 +32,11 @@ $(LIBRARY_NAME)_CCFLAGS = -std=c++11 -Wno-unused-function -Wno-objc-missing-prop
 $(LIBRARY_NAME)_OBJCFLAGS = -fobjc-arc
 $(LIBRARY_NAME)_LDFLAGS += -Wl,-no_warn_inits
 
-# 兼容性标志，帮助在旧设备上更好工作
+# 兼容性标志
 $(LIBRARY_NAME)_CFLAGS += -miphoneos-version-min=9.0
 
-# 包含所有源文件 
-$(LIBRARY_NAME)_FILES = $(shell find . -name '*.m' -o -name '*.mm')
-$(LIBRARY_NAME)_FILES += flex_fishhook.c
+# 包含源文件，排除 theos/vendor 目录
+$(LIBRARY_NAME)_FILES = $(shell find . -path './theos/vendor' -prune -o -name '*.m' -o -name '*.mm') flex_fishhook.c
 
 include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/library.mk
