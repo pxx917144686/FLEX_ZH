@@ -1,19 +1,22 @@
-name: build deb
+name: Build FLEX_ZH Deb
 
-on: 
+on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
         with:
-          submodules: true
+          submodules: recursive  # 递归拉取子模块，确保 Orion 完整
 
-      - name: Check cache
+      - name: Check cache for Theos and SDKs
         run: |
           echo upstream_heads=`git ls-remote https://github.com/roothide/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
 
@@ -26,20 +29,33 @@ jobs:
 
       - name: Prepare Theos
         uses: huami1314/theos-action@main
+        with:
+          theos-path: ${{ github.workspace }}/theos
 
-      - name: Setup GNU Make
+      - name: Install dependencies
         run: |
+          brew install make ldid
           echo "$(brew --prefix)/opt/make/libexec/gnubin" >> $GITHUB_PATH
 
-      - name: Build package
+      - name: Clean build directory
         run: |
-          rm -f packages/*
-          make package FINALPACKAGE=1 -j$(sysctl -n hw.ncpu)
-          make package THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1 -j$(sysctl -n hw.ncpu)
-          make package THEOS_PACKAGE_SCHEME=roothide FINALPACKAGE=1 -j$(sysctl -n hw.ncpu)
+          rm -rf packages/*
+          gmake clean
 
-      - name: Upload specific Deb packages
+      - name: Build package (rootful)
+        run: |
+          gmake package FINALPACKAGE=1 -j$(sysctl -n hw.ncpu)
+
+      - name: Build package (rootless)
+        run: |
+          gmake package THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1 -j$(sysctl -n hw.ncpu)
+
+      - name: Build package (roothide)
+        run: |
+          gmake package THEOS_PACKAGE_SCHEME=roothide FINALPACKAGE=1 -j$(sysctl -n hw.ncpu)
+
+      - name: Upload Deb packages
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: FLEX_Pro
-          path: /Users/runner/work/FLEX_ZH/FLEX_ZH/*.deb
+          name: FLEX_ZH
+          path: ${{ github.workspace }}/packages/*.deb
