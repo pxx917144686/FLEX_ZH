@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
         with:
-          submodules: recursive  # 递归拉取子模块
+          submodules: recursive  # 递归拉取子模块，确保 Orion（如果需要）完整
 
       - name: Check cache for Theos and SDKs
         run: |
@@ -41,6 +41,7 @@ jobs:
         run: |
           echo $THEOS
           ls -R $THEOS/sdks
+          ls -la .  # 检查项目目录结构
 
       - name: Clean build directory
         run: |
