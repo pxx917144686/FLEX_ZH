@@ -8,13 +8,13 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14  # 显式指定 macOS 14，避免未来迁移问题
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
         with:
-          submodules: recursive  # 递归拉取子模块，确保 Orion（如果需要）完整
+          submodules: recursive  # 递归拉取子模块
 
       - name: Check cache for Theos and SDKs
         run: |
@@ -30,11 +30,11 @@ jobs:
       - name: Prepare Theos
         uses: huami1314/theos-action@main
         with:
-          theos-path: ${{ github.workspace }}/theos
+          theos-dir: ${{ github.workspace }}/theos  # 修正为 theos-dir
 
       - name: Install dependencies
         run: |
-          brew install make ldid
+          brew list make ldid || brew install --quiet make ldid
           echo "$(brew --prefix)/opt/make/libexec/gnubin" >> $GITHUB_PATH
 
       - name: Debug Theos environment
