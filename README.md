@@ -33,3 +33,7 @@ source ~/.zshrc
 ![Preview](./3.png)
 
 ![Preview](./4.png)
+
+![Preview](./5.png)
+
+![Preview](./6.png)
