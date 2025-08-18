@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
         with:
-          submodules: recursive  # 递归拉取子模块，确保 Orion 完整
+          submodules: recursive  # 递归拉取子模块
 
       - name: Check cache for Theos and SDKs
         run: |
@@ -36,6 +36,11 @@ jobs:
         run: |
           brew install make ldid
           echo "$(brew --prefix)/opt/make/libexec/gnubin" >> $GITHUB_PATH
+
+      - name: Debug Theos environment
+        run: |
+          echo $THEOS
+          ls -R $THEOS/sdks
 
       - name: Clean build directory
         run: |
